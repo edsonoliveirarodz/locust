@@ -1,0 +1,14 @@
+namespace: locust
+
+resources:
+- locust-namespace.yaml
+- locust-deployment-master.yaml
+- locust-deployment-worker.yaml
+- locust-service-master.yaml
+
+configMapGenerator:
+- name: locust-scripts
+  files:
+  - locustfile.py
+  - requirements.txt
+  - cpf.csv

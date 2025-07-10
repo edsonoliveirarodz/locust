@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust-master
+  namespace: locust
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locust
+      role: master
+  template:
+    metadata:
+      labels:
+        app: locust
+        role: master
+    spec:
+      containers:
+      - name: locust
+        image: locustio/locust:2.37.12
+        command: [ "/bin/sh", "-c" ]
+        args:
+        - pip install -r /mnt/locust/requirements.txt && locust -f /mnt/locust/locustfile.py --master --host http://localhost
+        ports:
+        - containerPort: 8089
+        volumeMounts:
+        - name: locust-scripts
+          mountPath: /mnt/locust
+      volumes:
+      - name: locust-scripts
+        configMap:
+          name: locust-scripts
